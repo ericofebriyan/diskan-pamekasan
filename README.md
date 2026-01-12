@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Website Resmi Dinas Perikanan Kabupaten Pamekasan
 
-## Getting Started
+Website profil resmi untuk Dinas Perikanan Kabupaten Pamekasan, dibangun dengan teknologi web modern untuk memberikan informasi publik yang transparan, cepat, dan mudah diakses.
 
-First, run the development server:
+## Fitur Utama
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### 1. Informasi Publik
+- **Profil Dinas**: Visi, Misi, dan Struktur Organisasi interaktif.
+- **Berita Terkini**: Artikel dan pengumuman terbaru seputar kegiatan dinas.
+- **Agenda Kegiatan**: Jadwal kegiatan dinas yang terintegrasi.
+- **Galeri Foto**: Dokumentasi kegiatan visual.
+- **Layanan Bidang**: Informasi detail mengenai 4 bidang utama (Tangkap, Budidaya, Pengawasan, Pengolahan).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Fitur Khusus
+- **Update Harga Ikan**: Widget harga ikan harian di halaman depan yang membantu nelayan memantau harga pasar.
+- **Direktori Pegawai**: Daftar pegawai yang dapat dicari berdasarkan nama atau NIP.
+- **Struktur Organisasi**: Bagan interaktif yang menampilkan detail tugas pokok dan fungsi setiap jabatan.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Admin Panel (CMS)
+- Dashboard pengelolaan konten (Berita, Agenda, Galeri, Harga Ikan).
+- **Keamanan**: Fitur konfirmasi hapus data (Delete Confirmation) untuk mencegah ketidaksengajaan.
+- **Validasi**: Sistem validasi input untuk memastikan integritas data.
+- **Real-time**: Perubahan data langsung tampil di halaman publik tanpa perlu refresh (Client-side State).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Teknologi
 
-## Learn More
+Project ini dibangun menggunakan:
+- **Framework**: [Next.js 15+](https://nextjs.org/) (App Router)
+- **Bahasa**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **UI Components**: Custom components dengan Radix UI primitives.
 
-To learn more about Next.js, take a look at the following resources:
+## Cara Menjalankan Project (Lokal)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  **Install Dependencies**:
+    ```bash
+    npm install
+    # atau
+    yarn install
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2.  **Jalankan Server Development**:
+    ```bash
+    npm run dev
+    ```
+    Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
 
-## Deploy on Vercel
+3.  **Build untuk Produksi**:
+    ```bash
+    npm run build
+    npm start
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Untuk panduan deployment ke Vercel atau cPanel, silakan baca file [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+## Struktur Folder
+
+- `/app`: Halaman-halaman website (Fitur Next.js App Router).
+- `/components`: Komponen UI yang dapat digunakan kembali (Navbar, Footer, Button, dll).
+- `/context`: Manajemen state global (AppContext) untuk data dinamis.
+- `/public`: Aset statis seperti gambar dan icon.
