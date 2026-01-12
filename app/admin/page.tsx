@@ -221,10 +221,10 @@ export default function AdminPage() {
                         {isAddingAgenda && (
                             <div className="p-6 bg-slate-50 border-b border-slate-100 animate-in slide-in-from-top-4 fade-in">
                                 <form onSubmit={handleAddAgenda} className="grid grid-cols-2 gap-4">
-                                    <input required type="text" placeholder="Nama Kegiatan" className="p-2 rounded border" value={newAgenda.title} onChange={e => setNewAgenda({ ...newAgenda, title: e.target.value })} />
-                                    <input required type="date" className="p-2 rounded border" value={newAgenda.date} onChange={e => setNewAgenda({ ...newAgenda, date: e.target.value })} />
-                                    <input required type="text" placeholder="Waktu (e.g. 09:00 - 12:00)" className="p-2 rounded border" value={newAgenda.time} onChange={e => setNewAgenda({ ...newAgenda, time: e.target.value })} />
-                                    <input required type="text" placeholder="Lokasi" className="p-2 rounded border" value={newAgenda.location} onChange={e => setNewAgenda({ ...newAgenda, location: e.target.value })} />
+                                    <input required type="text" placeholder="Nama Kegiatan" aria-label="Nama Kegiatan" className="p-2 rounded border" value={newAgenda.title} onChange={e => setNewAgenda({ ...newAgenda, title: e.target.value })} />
+                                    <input required type="date" aria-label="Tanggal Kegiatan" className="p-2 rounded border" value={newAgenda.date} onChange={e => setNewAgenda({ ...newAgenda, date: e.target.value })} />
+                                    <input required type="text" placeholder="Waktu (e.g. 09:00 - 12:00)" aria-label="Waktu Kegiatan" className="p-2 rounded border" value={newAgenda.time} onChange={e => setNewAgenda({ ...newAgenda, time: e.target.value })} />
+                                    <input required type="text" placeholder="Lokasi" aria-label="Lokasi Kegiatan" className="p-2 rounded border" value={newAgenda.location} onChange={e => setNewAgenda({ ...newAgenda, location: e.target.value })} />
                                     <div className="flex gap-2 col-span-2 justify-end">
                                         <Button type="submit">Simpan</Button>
                                     </div>
@@ -254,7 +254,7 @@ export default function AdminPage() {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right space-x-2 flex justify-end">
-                                            <button onClick={() => initiateDelete(item.id, 'agenda')} className="text-red-600 hover:text-red-700 p-1 hover:bg-red-50 rounded">
+                                            <button onClick={() => initiateDelete(item.id, 'agenda')} aria-label="Hapus Agenda" className="text-red-600 hover:text-red-700 p-1 hover:bg-red-50 rounded">
                                                 <Trash size={16} />
                                             </button>
                                         </td>
@@ -277,10 +277,10 @@ export default function AdminPage() {
                         {isAddingNews && (
                             <div className="p-6 bg-slate-50 border-b border-slate-100 animate-in slide-in-from-top-4 fade-in">
                                 <form onSubmit={handleAddNews} className="grid grid-cols-2 gap-4">
-                                    <input required type="text" placeholder="Judul Berita" className="p-2 rounded border col-span-2" value={newNews.title} onChange={e => setNewNews({ ...newNews, title: e.target.value })} />
-                                    <input type="date" className="p-2 rounded border" value={newNews.date} onChange={e => setNewNews({ ...newNews, date: e.target.value })} />
-                                    <input required type="text" placeholder="Kategori" className="p-2 rounded border" value={newNews.category} onChange={e => setNewNews({ ...newNews, category: e.target.value })} />
-                                    <textarea required placeholder="Ringkasan Berita" className="p-2 rounded border col-span-2 h-24" value={newNews.excerpt} onChange={e => setNewNews({ ...newNews, excerpt: e.target.value })} />
+                                    <input required type="text" placeholder="Judul Berita" aria-label="Judul Berita" className="p-2 rounded border col-span-2" value={newNews.title} onChange={e => setNewNews({ ...newNews, title: e.target.value })} />
+                                    <input type="date" aria-label="Tanggal Berita" className="p-2 rounded border" value={newNews.date} onChange={e => setNewNews({ ...newNews, date: e.target.value })} />
+                                    <input required type="text" placeholder="Kategori" aria-label="Kategori Berita" className="p-2 rounded border" value={newNews.category} onChange={e => setNewNews({ ...newNews, category: e.target.value })} />
+                                    <textarea required placeholder="Ringkasan Berita" aria-label="Ringkasan Berita" className="p-2 rounded border col-span-2 h-24" value={newNews.excerpt} onChange={e => setNewNews({ ...newNews, excerpt: e.target.value })} />
                                     <div className="flex gap-2 col-span-2 justify-end">
                                         <Button type="submit">Simpan</Button>
                                     </div>
@@ -304,7 +304,7 @@ export default function AdminPage() {
                                         <td className="px-6 py-4 text-slate-600">{item.date}</td>
                                         <td className="px-6 py-4 text-slate-600">{item.category}</td>
                                         <td className="px-6 py-4 text-right space-x-2 flex justify-end">
-                                            <button onClick={() => initiateDelete(item.id, 'news')} className="text-red-600 hover:text-red-700 p-1 hover:bg-red-50 rounded">
+                                            <button onClick={() => initiateDelete(item.id, 'news')} aria-label="Hapus Berita" className="text-red-600 hover:text-red-700 p-1 hover:bg-red-50 rounded">
                                                 <Trash size={16} />
                                             </button>
                                         </td>
@@ -327,8 +327,8 @@ export default function AdminPage() {
                         {isAddingGallery && (
                             <div className="p-6 bg-slate-50 border-b border-slate-100 animate-in slide-in-from-top-4 fade-in">
                                 <form onSubmit={handleAddGallery} className="grid grid-cols-2 gap-4">
-                                    <input required type="text" placeholder="Judul Foto" className="p-2 rounded border col-span-2" value={newGallery.title} onChange={e => setNewGallery({ ...newGallery, title: e.target.value })} />
-                                    <input type="date" className="p-2 rounded border" value={newGallery.date} onChange={e => setNewGallery({ ...newGallery, date: e.target.value })} />
+                                    <input required type="text" placeholder="Judul Foto" aria-label="Judul Foto" className="p-2 rounded border col-span-2" value={newGallery.title} onChange={e => setNewGallery({ ...newGallery, title: e.target.value })} />
+                                    <input type="date" aria-label="Tanggal Foto" className="p-2 rounded border" value={newGallery.date} onChange={e => setNewGallery({ ...newGallery, date: e.target.value })} />
                                     <div className="col-span-2 text-xs text-slate-500">Note: Upload gambar belum tersedia (menggunakan placeholder).</div>
                                     <div className="flex gap-2 col-span-2 justify-end">
                                         <Button type="submit">Simpan</Button>
@@ -345,7 +345,7 @@ export default function AdminPage() {
                                     </div>
                                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
                                         <p className="text-white text-xs font-medium truncate">{item.title}</p>
-                                        <button onClick={() => initiateDelete(item.id, 'gallery')} className="mt-2 text-red-300 hover:text-red-200 text-xs flex items-center gap-1">
+                                        <button onClick={() => initiateDelete(item.id, 'gallery')} aria-label="Hapus Foto" className="mt-2 text-red-300 hover:text-red-200 text-xs flex items-center gap-1">
                                             <Trash size={12} /> Hapus
                                         </button>
                                     </div>
@@ -367,13 +367,13 @@ export default function AdminPage() {
                         {isAddingDocument && (
                             <div className="p-6 bg-slate-50 border-b border-slate-100 animate-in slide-in-from-top-4 fade-in">
                                 <form onSubmit={handleAddDocument} className="grid grid-cols-2 gap-4">
-                                    <input required type="text" placeholder="Nama Dokumen" className="p-2 rounded border col-span-2" value={newDocument.title} onChange={e => setNewDocument({ ...newDocument, title: e.target.value })} />
-                                    <select className="p-2 rounded border" value={newDocument.category} onChange={e => setNewDocument({ ...newDocument, category: e.target.value as any })}>
+                                    <input required type="text" placeholder="Nama Dokumen" aria-label="Nama Dokumen" className="p-2 rounded border col-span-2" value={newDocument.title} onChange={e => setNewDocument({ ...newDocument, title: e.target.value })} />
+                                    <select className="p-2 rounded border" aria-label="Kategori Dokumen" value={newDocument.category} onChange={e => setNewDocument({ ...newDocument, category: e.target.value as any })}>
                                         <option value="Peraturan">Peraturan</option>
                                         <option value="Pengumuman">Pengumuman</option>
                                         <option value="Laporan">Laporan Kinerja</option>
                                     </select>
-                                    <input type="date" className="p-2 rounded border" value={newDocument.date} onChange={e => setNewDocument({ ...newDocument, date: e.target.value })} />
+                                    <input type="date" aria-label="Tanggal Dokumen" className="p-2 rounded border" value={newDocument.date} onChange={e => setNewDocument({ ...newDocument, date: e.target.value })} />
                                     <div className="col-span-2 text-xs text-slate-500">Note: Fitur upload file fisik belum terhubung ke server.</div>
                                     <div className="flex gap-2 col-span-2 justify-end">
                                         <Button type="submit">Simpan</Button>
@@ -400,7 +400,7 @@ export default function AdminPage() {
                                         </td>
                                         <td className="px-6 py-4 text-slate-600">{item.date}</td>
                                         <td className="px-6 py-4 text-right space-x-2 flex justify-end">
-                                            <button onClick={() => initiateDelete(item.id, 'document')} className="text-red-600 hover:text-red-700 p-1 hover:bg-red-50 rounded">
+                                            <button onClick={() => initiateDelete(item.id, 'document')} aria-label="Hapus Dokumen" className="text-red-600 hover:text-red-700 p-1 hover:bg-red-50 rounded">
                                                 <Trash size={16} />
                                             </button>
                                         </td>
@@ -433,6 +433,7 @@ export default function AdminPage() {
                                             <div className="flex items-center justify-end gap-2">
                                                 <input
                                                     type="number"
+                                                    aria-label={`Harga ${item.name}`}
                                                     className="w-24 p-1 border rounded text-right"
                                                     defaultValue={item.price}
                                                     onBlur={(e) => {

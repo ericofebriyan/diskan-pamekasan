@@ -18,8 +18,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center z-0"
-          style={{ backgroundImage: "url('/hero.png')" }}
+          className="absolute inset-0 bg-cover bg-center z-0 bg-[url('/hero.png')]"
         />
         <div className="absolute inset-0 bg-black/50 z-10" />
 

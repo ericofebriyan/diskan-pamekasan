@@ -140,6 +140,7 @@ export default function OrgChart() {
                                 </div>
                                 <button
                                     onClick={() => setSelectedNode(null)}
+                                    aria-label="Tutup Detail"
                                     className="bg-white/20 p-1 rounded-full hover:bg-white/30 transition-colors"
                                 >
                                     <X size={20} />
