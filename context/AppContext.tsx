@@ -101,11 +101,56 @@ type AppContextType = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-    const [agenda, setAgenda] = useState<AgendaItem[]>(initialAgenda);
-    const [news, setNews] = useState<NewsItem[]>(initialNews);
-    const [gallery, setGallery] = useState<GalleryItem[]>(initialGallery);
-    const [fishPrices, setFishPrices] = useState<FishPriceItem[]>(initialFishPrices);
-    const [documents, setDocuments] = useState<DocumentItem[]>(initialDocuments);
+    // Helper to load from localStorage
+    const loadState = <T,>(key: string, fallback: T): T => {
+        if (typeof window === "undefined") return fallback;
+        try {
+            const saved = localStorage.getItem(key);
+            return saved ? JSON.parse(saved) : fallback;
+        } catch (e) {
+            console.error(`Error loading ${key}`, e);
+            return fallback;
+        }
+    };
+
+    // States with initializers that check localStorage
+    const [agenda, setAgenda] = useState<AgendaItem[]>([]);
+    const [news, setNews] = useState<NewsItem[]>([]);
+    const [gallery, setGallery] = useState<GalleryItem[]>([]);
+    const [fishPrices, setFishPrices] = useState<FishPriceItem[]>([]);
+    const [documents, setDocuments] = useState<DocumentItem[]>([]);
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    // Hydrate on mount
+    useEffect(() => {
+        setAgenda(loadState("agenda", initialAgenda));
+        setNews(loadState("news", initialNews));
+        setGallery(loadState("gallery", initialGallery));
+        setFishPrices(loadState("fishPrices", initialFishPrices));
+        setDocuments(loadState("documents", initialDocuments));
+        setIsInitialized(true);
+    }, []);
+
+    // Persist effects
+    useEffect(() => {
+        if (isInitialized) localStorage.setItem("agenda", JSON.stringify(agenda));
+    }, [agenda, isInitialized]);
+
+    useEffect(() => {
+        if (isInitialized) localStorage.setItem("news", JSON.stringify(news));
+    }, [news, isInitialized]);
+
+    useEffect(() => {
+        if (isInitialized) localStorage.setItem("gallery", JSON.stringify(gallery));
+    }, [gallery, isInitialized]);
+
+    useEffect(() => {
+        if (isInitialized) localStorage.setItem("fishPrices", JSON.stringify(fishPrices));
+    }, [fishPrices, isInitialized]);
+
+    useEffect(() => {
+        if (isInitialized) localStorage.setItem("documents", JSON.stringify(documents));
+    }, [documents, isInitialized]);
 
     const addAgenda = (item: Omit<AgendaItem, "id">) => {
         const newItem = { ...item, id: Date.now() };
@@ -152,6 +197,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const deleteDocument = (id: number) => {
         setDocuments(documents.filter((i) => i.id !== id));
     };
+
+    if (!isInitialized) {
+        return null; // or a loading spinner
+    }
 
     return (
         <AppContext.Provider value={{ agenda, addAgenda, deleteAgenda, news, addNews, deleteNews, gallery, addGallery, deleteGallery, fishPrices, updateFishPrice, documents, addDocument, deleteDocument }}>

@@ -30,6 +30,7 @@ export default function AdminPage() {
 
     const [isAddingGallery, setIsAddingGallery] = useState(false);
     const [newGallery, setNewGallery] = useState({ title: "", date: "", image: "" });
+    const [isUploading, setIsUploading] = useState(false);
 
     const [isAddingDocument, setIsAddingDocument] = useState(false);
     const [newDocument, setNewDocument] = useState({ title: "", category: "Pengumuman" as const, date: "", fileUrl: "#" });
@@ -38,6 +39,40 @@ export default function AdminPage() {
     const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
         setNotification({ message, type });
         setTimeout(() => setNotification(null), 3000);
+    };
+
+    // Helper: Convert File to Base64
+    const fileToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = error => reject(error);
+        });
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, type: 'gallery' | 'document') => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 500 * 1024) { // 500KB limit
+                showNotification("Ukuran file terlalu besar (Max 500KB)", "error");
+                e.target.value = ""; // Reset input
+                return;
+            }
+            setIsUploading(true);
+            try {
+                const base64 = await fileToBase64(file);
+                if (type === 'gallery') {
+                    setNewGallery(prev => ({ ...prev, image: base64 }));
+                } else {
+                    setNewDocument(prev => ({ ...prev, fileUrl: base64 }));
+                }
+            } catch (err) {
+                showNotification("Gagal memproses file", "error");
+            } finally {
+                setIsUploading(false);
+            }
+        }
     };
 
     // Handlers
@@ -69,14 +104,19 @@ export default function AdminPage() {
 
     const handleAddGallery = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!newGallery.image) {
+            showNotification("Mohon upload gambar terlebih dahulu", "error");
+            return;
+        }
         addGallery({
             ...newGallery,
             date: newGallery.date || new Date().toISOString().split('T')[0]
         });
+        setIsUploading(false);
         setIsAddingGallery(false);
         setNewGallery({ title: "", date: "", image: "" });
         showNotification("Foto berhasil ditambahkan ke galeri!");
-    }
+    };
 
     const handleAddDocument = (e: React.FormEvent) => {
         e.preventDefault();
@@ -87,7 +127,7 @@ export default function AdminPage() {
         setIsAddingDocument(false);
         setNewDocument({ title: "", category: "Pengumuman", date: "", fileUrl: "#" });
         showNotification("Dokumen berhasil diunggah!");
-    }
+    };
 
     // Delete Flow
     const initiateDelete = (id: number, type: 'agenda' | 'news' | 'gallery' | 'document') => {
@@ -329,7 +369,22 @@ export default function AdminPage() {
                                 <form onSubmit={handleAddGallery} className="grid grid-cols-2 gap-4">
                                     <input required type="text" placeholder="Judul Foto" aria-label="Judul Foto" className="p-2 rounded border col-span-2" value={newGallery.title} onChange={e => setNewGallery({ ...newGallery, title: e.target.value })} />
                                     <input type="date" aria-label="Tanggal Foto" className="p-2 rounded border" value={newGallery.date} onChange={e => setNewGallery({ ...newGallery, date: e.target.value })} />
-                                    <div className="col-span-2 text-xs text-slate-500">Note: Upload gambar belum tersedia (menggunakan placeholder).</div>
+                                    <input type="date" aria-label="Tanggal Foto" className="p-2 rounded border" value={newGallery.date} onChange={e => setNewGallery({ ...newGallery, date: e.target.value })} />
+                                    <div className="col-span-2">
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">Upload Foto (Max 500KB)</label>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            aria-label="Upload Foto Galeri"
+                                            className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                                            onChange={(e) => handleFileChange(e, 'gallery')}
+                                        />
+                                    </div>
+                                    {newGallery.image && (
+                                        <div className="col-span-2 relative h-32 w-full bg-slate-100 rounded overflow-hidden">
+                                            <img src={newGallery.image} alt="Preview" className="h-full w-full object-cover" />
+                                        </div>
+                                    )}
                                     <div className="flex gap-2 col-span-2 justify-end">
                                         <Button type="submit">Simpan</Button>
                                     </div>
@@ -340,8 +395,12 @@ export default function AdminPage() {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6">
                             {gallery.map((item) => (
                                 <div key={item.id} className="group relative bg-slate-100 rounded-lg overflow-hidden aspect-square border border-slate-200">
-                                    <div className="absolute inset-0 flex items-center justify-center text-slate-300">
-                                        <ImageIcon size={32} />
+                                    <div className="absolute inset-0 flex items-center justify-center text-slate-300 bg-slate-200">
+                                        {item.image ? (
+                                            <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <ImageIcon size={32} />
+                                        )}
                                     </div>
                                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
                                         <p className="text-white text-xs font-medium truncate">{item.title}</p>
@@ -374,7 +433,16 @@ export default function AdminPage() {
                                         <option value="Laporan">Laporan Kinerja</option>
                                     </select>
                                     <input type="date" aria-label="Tanggal Dokumen" className="p-2 rounded border" value={newDocument.date} onChange={e => setNewDocument({ ...newDocument, date: e.target.value })} />
-                                    <div className="col-span-2 text-xs text-slate-500">Note: Fitur upload file fisik belum terhubung ke server.</div>
+                                    <div className="col-span-2">
+                                        <label className="block text-sm font-medium text-slate-700 mb-1">Upload Dokumen PDF (Max 500KB)</label>
+                                        <input
+                                            type="file"
+                                            accept=".pdf,.doc,.docx"
+                                            aria-label="Upload Dokumen"
+                                            className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                            onChange={(e) => handleFileChange(e, 'document')}
+                                        />
+                                    </div>
                                     <div className="flex gap-2 col-span-2 justify-end">
                                         <Button type="submit">Simpan</Button>
                                     </div>
@@ -394,7 +462,15 @@ export default function AdminPage() {
                             <tbody className="divide-y divide-slate-100">
                                 {documents.map((item) => (
                                     <tr key={item.id} className="hover:bg-slate-50">
-                                        <td className="px-6 py-4 font-medium text-slate-900">{item.title}</td>
+                                        <td className="px-6 py-4 font-medium text-slate-900">
+                                            {item.fileUrl !== "#" ? (
+                                                <a href={item.fileUrl} download={item.title} className="text-blue-600 hover:underline flex items-center gap-2">
+                                                    {item.title}
+                                                </a>
+                                            ) : (
+                                                item.title
+                                            )}
+                                        </td>
                                         <td className="px-6 py-4">
                                             <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs border border-slate-200">{item.category}</span>
                                         </td>
