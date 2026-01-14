@@ -16,6 +16,7 @@ export type AgendaItem = {
 export type NewsItem = {
     id: number;
     title: string;
+    slug: string;
     date: string;
     author: string;
     excerpt: string;
@@ -28,6 +29,7 @@ export type GalleryItem = {
     title: string;
     image: string;
     date: string;
+    slug?: string;
 };
 
 export type FishPriceItem = {
@@ -42,9 +44,10 @@ export type FishPriceItem = {
 export type DocumentItem = {
     id: number;
     title: string;
-    category: "Peraturan" | "Pengumuman" | "Laporan";
+    category: string;
     fileUrl: string; // Mock URL
     date: string;
+    size?: string;
 };
 
 // Initial Data
@@ -56,9 +59,9 @@ const initialAgenda: AgendaItem[] = [
 ];
 
 const initialNews: NewsItem[] = [
-    { id: 1, title: "Penyaluran Bantuan Sarana Perikanan Tangkap Tahun Anggaran 2024", date: "2024-10-12", author: "Admin", excerpt: "Dinas Perikanan menyalurkan bantuan berupa mesin kapal dan jaring kepada 5 kelompok usaha bersama (KUB).", category: "Program", content: "" },
-    { id: 2, title: "Sosialisasi Perizinan Online (E-Pas Kecil) di Kecamatan Tlanakan", date: "2024-10-10", author: "Humas", excerpt: "Kegiatan jemput bola pelayanan perizinan kapal nelayan < 5 GT.", category: "Pelayanan", content: "" },
-    { id: 3, title: "Monitoring Harga Ikan di Pasar Kolpajung Minggu Ke-2 Oktober", date: "2024-10-08", author: "Tim Data", excerpt: "Harga ikan layang dan tongkol mengalami kenaikan tipis akibat cuaca.", category: "Informasi Pasar", content: "" },
+    { id: 1, title: "Penyaluran Bantuan Sarana Perikanan Tangkap Tahun Anggaran 2024", slug: "penyaluran-bantuan-sarana-2024", date: "2024-10-12", author: "Admin", excerpt: "Dinas Perikanan menyalurkan bantuan berupa mesin kapal dan jaring kepada 5 kelompok usaha bersama (KUB).", category: "Program", content: "Dinas Perikanan Kabupaten Pamekasan kembali menyalurkan bantuan sarana perikanan tangkap kepada Kelompok Usaha Bersama (KUB) nelayan. Bantuan ini bersumber dari Dana Alokasi Khusus (DAK) Tahun Anggaran 2024. Kepala Dinas Perikanan berharap bantuan ini dapat meningkatkan produktivitas tangkapan nelayan." },
+    { id: 2, title: "Sosialisasi Perizinan Online (E-Pas Kecil) di Kecamatan Tlanakan", slug: "sosialisasi-epas-kecil-tlanakan", date: "2024-10-10", author: "Humas", excerpt: "Kegiatan jemput bola pelayanan perizinan kapal nelayan < 5 GT.", category: "Pelayanan", content: "Tim Pelayanan Terpadu Dinas Perikanan melakukan soialisasi dan pelayanan gerai E-Pas Kecil di Kecamatan Tlanakan. Kegiatan ini bertujuan untuk mempermudah nelayan dalam mengurus dokumen legalitas kapal di bawah 5 GT." },
+    { id: 3, title: "Monitoring Harga Ikan di Pasar Kolpajung Minggu Ke-2 Oktober", slug: "monitoring-harga-ikan-oktober-2", date: "2024-10-08", author: "Tim Data", excerpt: "Harga ikan layang dan tongkol mengalami kenaikan tipis akibat cuaca.", category: "Informasi Pasar", content: "Berdasarkan hasil monitoring di Pasar Kolpajung, harga komoditas ikan laut mengalami fluktuasi. Ikan layang naik menjadi Rp 20.000/kg, sementara ikan tongkol stabil di angka Rp 25.000/kg. Kenaikan dipicu oleh gelombang tinggi yang menghambat aktivitas nelayan sebagian wilayah." },
 ];
 
 const initialGallery: GalleryItem[] = Array.from({ length: 8 }).map((_, i) => ({
@@ -76,9 +79,11 @@ const initialFishPrices: FishPriceItem[] = [
 ];
 
 const initialDocuments: DocumentItem[] = [
-    { id: 1, title: "Peraturan Bupati tentang Retribusi Perikanan", category: "Peraturan", date: "2024-01-15", fileUrl: "#" },
-    { id: 2, title: "Laporan Kinerja Instansi Pemerintah 2023", category: "Laporan", date: "2024-03-10", fileUrl: "#" },
-    { id: 3, title: "Pengumuman Pelelangan Kapal Ikan", category: "Pengumuman", date: "2024-10-20", fileUrl: "#" },
+    { id: 1, title: "Peraturan Bupati tentang Retribusi Perikanan", category: "Peraturan", date: "2024-01-15", fileUrl: "#", size: "2.5 MB" },
+    { id: 2, title: "Laporan Kinerja Instansi Pemerintah 2023", category: "Laporan", date: "2024-03-10", fileUrl: "#", size: "5.1 MB" },
+    { id: 3, title: "Pengumuman Pelelangan Kapal Ikan", category: "Pengumuman", date: "2024-10-20", fileUrl: "#", size: "120 KB" },
+    { id: 4, title: "Renstra Dinas Perikanan 2024-2029", category: "Renstra", date: "2024-01-10", fileUrl: "#", size: "3.2 MB" },
+    { id: 5, title: "SOP Pelayanan Rekomendasi BBM", category: "SOP", date: "2023-11-20", fileUrl: "#", size: "1.2 MB" },
 ];
 
 type AppContextType = {
@@ -100,18 +105,18 @@ type AppContextType = {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+const loadState = <T,>(key: string, fallback: T): T => {
+    if (typeof window === "undefined") return fallback;
+    try {
+        const saved = localStorage.getItem(key);
+        return saved ? JSON.parse(saved) : fallback;
+    } catch (e) {
+        console.error(`Error loading ${key}`, e);
+        return fallback;
+    }
+};
+
 export function AppProvider({ children }: { children: React.ReactNode }) {
-    // Helper to load from localStorage
-    const loadState = <T,>(key: string, fallback: T): T => {
-        if (typeof window === "undefined") return fallback;
-        try {
-            const saved = localStorage.getItem(key);
-            return saved ? JSON.parse(saved) : fallback;
-        } catch (e) {
-            console.error(`Error loading ${key}`, e);
-            return fallback;
-        }
-    };
 
     // States with initializers that check localStorage
     const [agenda, setAgenda] = useState<AgendaItem[]>([]);

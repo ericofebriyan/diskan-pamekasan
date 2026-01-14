@@ -1,109 +1,73 @@
 "use client";
 
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import { ArrowRight, Calendar, TrendingUp } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/context/AppContext";
+import HeroSlider from "@/components/features/HeroSlider";
+import StatsSection from "@/components/features/StatsSection";
+import AnnouncementBanner from "@/components/features/AnnouncementBanner";
 
 export default function Home() {
-  const { news, fishPrices } = useApp();
+  const { news } = useApp();
   const latestNews = news.slice(0, 3); // Top 3 news
 
   return (
-    <main className="min-h-screen flex flex-col">
-      <Navbar />
+    <div className="flex flex-col">
+      <HeroSlider />
 
-      {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center z-0 bg-[url('/hero.png')]"
-        />
-        <div className="absolute inset-0 bg-black/50 z-10" />
+      <div className="relative z-30">
+        <StatsSection />
+      </div>
 
-        <div className="relative z-20 text-center text-white px-4 max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 drop-shadow-lg">
-            Dinas Perikanan Kabupaten Pamekasan
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 text-slate-100 drop-shadow-md">
-            Mewujudkan Perikanan yang Mandiri, Berdaya Saing, dan Berkelanjutan
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Button size="lg" className="bg-primary hover:bg-blue-700 text-white border-0">
-              Jelajahi Profil
-            </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
-              Layanan Publik
-            </Button>
-          </div>
-        </div>
+      {/* Banner Pengumuman */}
+      <section className="py-8 bg-white">
+        <AnnouncementBanner />
       </section>
 
-      {/* Info Cards - Fish Prices Widget */}
-      <section className="py-12 px-4 -mt-20 relative z-30">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-
-          {/* Widget Harga Ikan */}
-          <div className="bg-white p-6 rounded-xl shadow-lg border-b-4 border-primary">
-            <div className="flex items-center gap-3 mb-4 text-primary">
-              <TrendingUp size={24} />
-              <h3 className="font-bold text-lg">Update Harga Ikan</h3>
+      {/* Latest Information - Dynamic */}
+      <section className="py-20 px-4 bg-slate-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <h2 className="text-3xl font-bold text-slate-900 mb-2">Informasi Terbaru</h2>
+              <p className="text-slate-500">Berita, Pengumuman, dan Artikel terkini Dinas Perikanan.</p>
             </div>
-            <div className="space-y-3">
-              {fishPrices.map((item) => (
-                <div key={item.id} className="flex justify-between items-center border-b border-dashed border-slate-200 pb-2 last:border-0">
-                  <span className="text-slate-700 font-medium">{item.name}</span>
-                  <div className="text-right">
-                    <div className="font-bold text-slate-900">Rp {item.price.toLocaleString('id-ID')} /kg</div>
-                    <div className={`text-xs ${item.change === 'up' ? 'text-red-500' : item.change === 'down' ? 'text-green-500' : 'text-slate-400'}`}>
-                      {item.change === 'up' ? '▲ Naik' : item.change === 'down' ? '▼ Turun' : '• Stabil'}
-                    </div>
+            <Link href="/informasi/berita" className="text-primary font-medium hover:underline flex items-center gap-2">
+              Lihat Semua <ArrowRight size={16} />
+            </Link>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {latestNews.map((item) => (
+              <article key={item.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-md transition-shadow group">
+                <div className="aspect-video bg-slate-100 relative overflow-hidden">
+                  {/* Placeholder for News Image */}
+                  <div className="absolute inset-0 bg-slate-200 flex items-center justify-center text-slate-400 group-hover:scale-105 transition-transform duration-500">
+                    <span className="text-xs">Image Placeholder</span>
                   </div>
                 </div>
-              ))}
-            </div>
-            <div className="mt-4 text-center">
-              <p className="text-xs text-slate-400">Diperbarui: {new Date(fishPrices[0]?.lastUpdated || new Date()).toLocaleDateString("id-ID")}</p>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-lg border-b-4 border-yellow-500">
-            <div className="flex items-center gap-3 mb-4 text-yellow-600">
-              <TrendingUp size={24} />
-              <h3 className="font-bold text-lg">Cuaca & Gelombang</h3>
-            </div>
-            <div className="text-center py-6">
-              <div className="text-4xl font-bold text-slate-800 mb-2">Cerah</div>
-              <div className="text-sm text-slate-500">Tinggi Gelombang: 0.5 - 1.25 m</div>
-              <p className="mt-4 text-xs text-slate-400">Sumber: BMKG Maritim</p>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow-lg border-b-4 border-green-600">
-            <div className="flex items-center gap-3 mb-4 text-green-700">
-              <Calendar size={24} />
-              <h3 className="font-bold text-lg">Agenda Terdekat</h3>
-            </div>
-            <div className="space-y-4">
-              <div className="flex gap-4">
-                <div className="bg-green-100 text-green-800 p-3 rounded-lg text-center min-w-[60px]">
-                  <div className="text-xs font-bold uppercase">OKT</div>
-                  <div className="text-xl font-bold">12</div>
+                <div className="p-6">
+                  <div className="text-xs text-slate-500 mb-3 flex items-center gap-2">
+                    <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium text-[10px] uppercase tracking-wider">{item.category}</span>
+                    <span>{item.date}</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-primary transition-colors">{item.title}</h3>
+                  <p className="text-slate-600 text-sm line-clamp-2 mb-4">
+                    {item.excerpt}
+                  </p>
+                  <Link href={`/informasi/berita/${item.slug || '#'}`} className="text-primary text-sm font-medium hover:underline flex items-center gap-1">
+                    Baca Selengkapnya <ArrowRight size={14} />
+                  </Link>
                 </div>
-                <div>
-                  <h4 className="font-bold text-slate-800 line-clamp-1">Penyaluran Bantuan Alat Tangkap</h4>
-                  <p className="text-sm text-slate-500">08:00 WIB • Tlanakan</p>
-                </div>
-              </div>
-            </div>
+              </article>
+            ))}
           </div>
-
         </div>
       </section>
 
-      {/* Visi Misi Summary */}
-      <section className="py-20 bg-slate-50">
+      {/* Visi Misi Summary (Kept for content richness) */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className="text-3xl font-bold text-slate-900 mb-6">Mewujudkan Kesejahteraan Nelayan & Pembudidaya</h2>
@@ -118,55 +82,18 @@ export default function Home() {
                 </li>
               ))}
             </ul>
-            <Link href="/profil/visi-misi">
+            <Link href="/profil">
               <Button variant="outline">Lihat Visi Misi Lengkap</Button>
             </Link>
           </div>
-          <div className="h-80 bg-slate-200 rounded-2xl relative overflow-hidden">
+          <div className="h-80 bg-slate-100 rounded-2xl relative overflow-hidden border border-slate-200">
             {/* Placeholder Image */}
-            <div className="absolute inset-0 bg-slate-300 flex items-center justify-center text-slate-400">
+            <div className="absolute inset-0 flex items-center justify-center text-slate-400">
               <span className="font-medium">Ilustrasi Kegiatan (Placeholder)</span>
             </div>
           </div>
         </div>
       </section>
-
-      {/* Latest Information - Dynamic */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <h2 className="text-3xl font-bold text-slate-900 mb-2">Informasi Terbaru</h2>
-              <p className="text-slate-500">Berita, Pengumuman, dan Artikel terkini.</p>
-            </div>
-            <Link href="/informasi/berita" className="text-primary font-medium hover:underline flex items-center gap-2">
-              Lihat Semua <ArrowRight size={16} />
-            </Link>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {latestNews.map((item) => (
-              <article key={item.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                <div className="aspect-video bg-slate-100 relative">
-                  <div className="absolute inset-0 bg-slate-200 flex items-center justify-center text-slate-400">
-                    <span className="text-xs">Image Placeholder</span>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="text-xs text-slate-400 mb-3 block">{item.date} • {item.category}</div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-3 line-clamp-2">{item.title}</h3>
-                  <p className="text-slate-600 text-sm line-clamp-2 mb-4">
-                    {item.excerpt}
-                  </p>
-                  <span className="text-primary text-sm font-medium hover:underline cursor-pointer">Baca Selengkapnya</span>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <Footer />
-    </main>
+    </div>
   );
 }

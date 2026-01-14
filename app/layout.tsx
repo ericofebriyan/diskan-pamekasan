@@ -10,6 +10,10 @@ export const metadata: Metadata = {
   description: "Website Resmi Dinas Perikanan Kabupaten Pamekasan. Transparan, Akuntabel, dan Melayani.",
 };
 
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import ComplaintWidget from "@/components/features/ComplaintWidget";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,7 +25,12 @@ export default function RootLayout({
         className={`${inter.className} antialiased min-h-screen flex flex-col`}
       >
         <AppProvider>
-          {children}
+          <Navbar />
+          <main className="flex-1 pt-20">
+            {children}
+          </main>
+          <Footer />
+          <ComplaintWidget />
         </AppProvider>
       </body>
     </html >
